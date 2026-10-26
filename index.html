@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e0834">
+  <title>EEF Alumni Tracker</title>
+  <meta name="description" content="ระบบติดตามผู้สำเร็จการศึกษานักศึกษาทุน กสศ. วิทยาลัยเทคโนโลยีสยาม (สยามเทค)">
+
+  <!-- ตัวอย่างลิงก์เวลาแชร์ใน LINE / Messenger / Facebook -->
+  <meta property="og:title" content="EEF Alumni Tracker">
+  <meta property="og:description" content="ระบบติดตามผู้สำเร็จการศึกษานักศึกษาทุน กสศ. วิทยาลัยเทคโนโลยีสยาม (สยามเทค)">
+  <meta property="og:image" content="https://i.postimg.cc/W4gLKg68/eef-final-1-1.png">
+  <link rel="icon" href="https://i.postimg.cc/W4gLKg68/eef-final-1-1.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --aqua: #1dffdd; --ink: #0e0834; }
+    html, body { margin: 0; height: 100%; background: var(--ink); overflow: hidden; }
+    body { font-family: 'Kanit', sans-serif; color: #ffffff; }
+
+    /* เว็บแอปจริงเต็มจอ */
+    #app { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: var(--ink); opacity: 0; transition: opacity 0.4s ease; }
+    #app.ready { opacity: 1; }
+
+    /* หน้าระหว่างโหลด */
+    #loading { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      background: radial-gradient(60rem 30rem at 16% -8%, rgba(29, 255, 221, 0.14), transparent 62%), linear-gradient(180deg, #0e0834 0%, #110a40 48%, #0b062b 100%);
+      transition: opacity 0.4s ease; }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    .spin { width: 42px; height: 42px; border-radius: 50%; border: 4px solid rgba(29, 255, 221, 0.2); border-top-color: var(--aqua); animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .msg { color: rgba(255, 255, 255, 0.8); font-size: 1rem; }
+    .slow { display: none; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; padding: 0 24px; }
+    .slow a { display: inline-block; margin-top: 10px; padding: 8px 20px; border-radius: 999px; background: var(--aqua); color: var(--ink); text-decoration: none; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div id="loading" role="status">
+    <div class="spin" aria-hidden="true"></div>
+    <div class="msg">กำลังโหลด...</div>
+    <div class="slow" id="slow">
+      โหลดนานกว่าปกติ ลองรอสักครู่ หรือเปิดหน้าเว็บโดยตรง<br>
+      <a id="direct" href="#" target="_top">เปิดหน้าเว็บโดยตรง</a>
+    </div>
+  </div>
+  <iframe id="app" title="EEF Alumni Tracker" allow="clipboard-read; clipboard-write"></iframe>
+
+  <script>
+    // ลิงก์เว็บแอป Apps Script (Deploy > Manage deployments > Web app URL ลงท้ายด้วย /exec)
+    // ถ้า Deploy แบบ New deployment ใหม่จนลิงก์เปลี่ยน ต้องแก้ตรงนี้ด้วย
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxGeqdAZ-SG0kgjCKfhFmTyAuKQjS2HvA4SYAVpUDqFSbIInyhF-UDjZpvKMs_DNo2-/exec";
+
+    // ส่งต่อ ?p=track / ?p=admin ไปยังเว็บแอป (รับเฉพาะค่าที่รู้จัก)
+    const PAGES = {
+      track: 'Follow Up • EEF Alumni Tracker',
+      admin: 'Admin • EEF Alumni Tracker'
+    };
+    const p = new URLSearchParams(location.search).get('p');
+    const page = Object.prototype.hasOwnProperty.call(PAGES, p) ? p : '';
+    const target = WEB_APP_URL + (page ? '?p=' + page : '');
+    document.title = page ? PAGES[page] : 'Register • EEF Alumni Tracker';
+    document.getElementById('direct').href = target;
+
+    const app = document.getElementById('app');
+    app.addEventListener('load', () => {
+      app.classList.add('ready');
+      document.getElementById('loading').classList.add('hide');
+    });
+    app.src = target;
+
+    // ถ้าเกิน 15 วินาทียังไม่ขึ้น ให้มีทางเปิดหน้าเว็บโดยตรง
+    setTimeout(() => {
+      if (!app.classList.contains('ready')) document.getElementById('slow').style.display = 'block';
+    }, 15000);
+  </script>
+</body>
+</html>
