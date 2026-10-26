@@ -46,7 +46,9 @@
       <a id="direct" href="#" target="_top">เปิดหน้าเว็บโดยตรง</a>
     </div>
   </div>
-  <iframe id="app" title="EEF Alumni Tracker" allow="clipboard-read; clipboard-write"></iframe>
+  <!-- credentialless: โหลดเว็บแอปโดยไม่ส่งการล็อกอิน Google ของเบราว์เซอร์ไปด้วย
+       แก้ปัญหาเปิดไม่ขึ้น ("ไม่สามารถเปิดไฟล์ได้ในเวลานี้") เมื่อล็อกอิน Google ไว้หลายบัญชี -->
+  <iframe id="app" title="EEF Alumni Tracker" allow="clipboard-read; clipboard-write" credentialless></iframe>
 
   <script>
     // ลิงก์เว็บแอป Apps Script (Deploy > Manage deployments > Web app URL ลงท้ายด้วย /exec)
